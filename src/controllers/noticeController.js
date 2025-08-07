@@ -14,7 +14,6 @@ const noticeController = {
                     photoBuffer,
                     descripcion
                 );
-                console.log('Respuesta del servicio:', data);
                 if (data.code === 11000) {
                     const err = new Error("Duplicate key error");
                     err.code = 11000;
