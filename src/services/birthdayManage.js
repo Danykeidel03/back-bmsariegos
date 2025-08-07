@@ -25,10 +25,6 @@ async function getDates() {
         
         const playersWithDays = players.map(player => {
             const birthDate = new Date(player.birthDay);
-            console.log('Fecha original:', player.birthDay);
-            console.log('Fecha parseada:', birthDate);
-            console.log('Mes:', birthDate.getUTCMonth(), 'Día:', birthDate.getUTCDate());
-            
             const thisYear = today.getFullYear();
             const nextBirthday = new Date(thisYear, birthDate.getUTCMonth(), birthDate.getUTCDate());
             
@@ -37,7 +33,6 @@ async function getDates() {
             }
             
             const daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
-            console.log('Días hasta cumpleaños:', daysUntil);
             
             return {
                 ...player.toObject(),
@@ -45,7 +40,6 @@ async function getDates() {
             };
         });
 
-        console.log('Total jugadores procesados:', playersWithDays.length);
         const daysArray = playersWithDays.map(p => p.daysUntil);        
         const minDays = Math.min(...daysArray);
         const result = playersWithDays.filter(p => p.daysUntil === minDays);
