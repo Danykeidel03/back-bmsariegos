@@ -39,9 +39,7 @@ async function getDates() {
 
         const daysArray = playersWithDays.map(p => p.daysUntil);        
         const minDays = Math.min(...daysArray);
-        const result = playersWithDays.filter(p => p.daysUntil === minDays);
-        
-        console.log(result);
+        const result = playersWithDays.filter(p => p.daysUntil === minDays);        
         return result;
     } catch (e) {
         return e
