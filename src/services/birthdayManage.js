@@ -19,9 +19,6 @@ async function getDates() {
         if (playersWithBirthdayToday.length > 0) {
             return playersWithBirthdayToday;
         }
-
-        console.log('Hoy:', today);
-        console.log('Mes actual:', todayMonth, 'Día actual:', todayDate);
         
         const playersWithDays = players.map(player => {
             const birthDate = new Date(player.birthDay);
