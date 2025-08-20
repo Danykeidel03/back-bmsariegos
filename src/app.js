@@ -42,6 +42,12 @@ app.use('/notice', noticeManage)
 const sponsorManage = require('./routes/sponsorManage')
 app.use('/sponsor', sponsorManage)
 
+const rivalTeamManage = require('./routes/rivalTeamManage')
+app.use('/rival-team', rivalTeamManage)
+
+const teamManage = require('./routes/teamManage')
+app.use('/team', teamManage)
+
 //toda mi api queda protegida de muchas peticiones recurrentes y excesivas
 app.use('/', apiLimiter);
 
