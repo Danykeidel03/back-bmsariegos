@@ -24,4 +24,13 @@ async function getTeams() {
     }
 }
 
-module.exports = { createTeam, getTeams };
+async function deleteTeam(id) {
+    try {
+        const deletedTeam = await Team.findByIdAndDelete(id);
+        return deletedTeam;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { createTeam, getTeams, deleteTeam };
