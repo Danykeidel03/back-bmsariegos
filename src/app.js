@@ -48,6 +48,9 @@ app.use('/rival-team', rivalTeamManage)
 const teamManage = require('./routes/teamManage')
 app.use('/team', teamManage)
 
+const matchManage = require('./routes/matchManage')
+app.use('/match', matchManage)
+
 //toda mi api queda protegida de muchas peticiones recurrentes y excesivas
 app.use('/', apiLimiter);
 
