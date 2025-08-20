@@ -1,4 +1,4 @@
-const { createTeam, getTeams } = require("../services/teamManage");
+const { createTeam, getTeams, deleteTeam } = require("../services/teamManage");
 
 const teamController = {
     createTeam:
@@ -29,6 +29,33 @@ const teamController = {
                 return response.status(200).json({
                     status: 200,
                     message: 'success',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+    deleteTeam:
+        async (request, response) => {
+            try {
+                const { id } = request.params;
+                const data = await deleteTeam(id);
+                
+                if (!data) {
+                    return response.status(404).json({
+                        status: 404,
+                        message: 'Team not found'
+                    });
+                }
+                
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Team deleted successfully',
                     data: data
                 });
             } catch (e) {
