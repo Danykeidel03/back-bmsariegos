@@ -7,7 +7,8 @@ const matchSchema = new mongoose.Schema({
     time: { type: String, required: true },
     result: { type: String, default: '0-0' },
     completed: { type: Number, default: 0 },
-    location: { type: String, required: true }
+    location: { type: String, required: true },
+    isHome: { type: Boolean, required: true }
 });
 
 const Match = mongoose.model('Match', matchSchema);

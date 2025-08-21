@@ -29,6 +29,10 @@ const createMatchValidators = [
     .notEmpty().withMessage('El lugar es obligatorio')
     .isString().withMessage('El lugar debe ser un texto'),
 
+  body('isHome')
+    .notEmpty().withMessage('El tipo de partido (local/suplente) es obligatorio')
+    .isBoolean().withMessage('El tipo de partido debe ser verdadero o falso'),
+
   validateResult
 ];
 
@@ -44,4 +48,16 @@ const updateMatchValidators = [
   validateResult
 ];
 
-module.exports = { createMatchValidators, updateMatchValidators };
+const updateMatchDateTimeValidators = [
+  body('date')
+    .notEmpty().withMessage('La fecha es obligatoria')
+    .isISO8601().withMessage('La fecha debe tener formato válido (YYYY-MM-DD)'),
+
+  body('time')
+    .notEmpty().withMessage('La hora es obligatoria')
+    .isString().withMessage('La hora debe ser un texto'),
+
+  validateResult
+];
+
+module.exports = { createMatchValidators, updateMatchValidators, updateMatchDateTimeValidators };
