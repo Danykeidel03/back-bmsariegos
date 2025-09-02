@@ -1,4 +1,4 @@
-const { newNotice, getLatestNotices } = require("../services/noticeManage");
+const { newNotice, getLatestNotices, getNotices, deleteNotice } = require("../services/noticeManage");
 const newNoticeValidator = require("../validations/noticeValidator");
 
 const noticeController = {
@@ -53,7 +53,47 @@ const noticeController = {
             console.log('Error:', e);
             return response.status(500).json({ message: "Error interno del servidor" });
         }
-    }
+    },
+    getAllNoticesController: async (request, response) => {
+        try {
+            const data = await getNotices();
+            return response.status(200).json({
+                status: 200,
+                message: 'success',
+                data: data
+            });
+        } catch (e) {
+            console.log('Error:', e);
+            return response.status(500).json({ message: "Error interno del servidor" });
+        }
+    },
+    deleteNotice:
+        async (request, response) => {
+            try {
+                const { id } = request.params;
+                const data = await deleteNotice(id);
+                
+                if (!data) {
+                    return response.status(404).json({
+                        status: 404,
+                        message: 'Notice not found'
+                    });
+                }
+                
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Notice deleted successfully',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                return response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        }
 }
 
 module.exports = noticeController;

@@ -19,27 +19,27 @@ async function getDates() {
         if (playersWithBirthdayToday.length > 0) {
             return playersWithBirthdayToday;
         }
-        
+
         const playersWithDays = players.map(player => {
             const birthDate = new Date(player.birthDay);
             const thisYear = today.getFullYear();
             const nextBirthday = new Date(thisYear, birthDate.getUTCMonth(), birthDate.getUTCDate());
-            
+
             if (nextBirthday <= today) {
                 nextBirthday.setFullYear(thisYear + 1);
             }
-            
+
             const daysUntil = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
-            
+
             return {
                 ...player.toObject(),
                 daysUntil
             };
         });
 
-        const daysArray = playersWithDays.map(p => p.daysUntil);        
+        const daysArray = playersWithDays.map(p => p.daysUntil);
         const minDays = Math.min(...daysArray);
-        const result = playersWithDays.filter(p => p.daysUntil === minDays);        
+        const result = playersWithDays.filter(p => p.daysUntil === minDays);
         return result;
     } catch (e) {
         return e
@@ -57,7 +57,7 @@ async function createBirthday({ name, dni, birthDay, category, photoBuffer }) {
         // Subir imagen a Cloudinary
         const uploadResult = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
-                { 
+                {
                     folder: 'birthday',
                     public_id: name.replace(/\s+/g, '_').toLowerCase()
                 },
@@ -75,7 +75,7 @@ async function createBirthday({ name, dni, birthDay, category, photoBuffer }) {
             category,
             photoName: uploadResult.secure_url
         });
-        
+
         const savedBirthday = await newBirthday.save();
         return savedBirthday;
     } catch (e) {
@@ -83,4 +83,22 @@ async function createBirthday({ name, dni, birthDay, category, photoBuffer }) {
     }
 }
 
-module.exports = { getDates, createBirthday };
+async function updatePlayer(id, { name, dni, birthDay, category }) {
+    try {
+        const player = await PlayerBirthday.findByIdAndUpdate(
+            id,
+            {
+                name: name,
+                dni: dni,
+                birthDay: new Date(birthDay),
+                category: category
+            },
+            { new: true }
+        )
+        return player;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { getDates, createBirthday, updatePlayer };

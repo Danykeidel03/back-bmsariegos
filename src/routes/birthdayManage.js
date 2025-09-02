@@ -7,5 +7,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', birthdayController.getBirthdays);
 router.post('/', upload.single('photo'), createBirthdayValidators, birthdayController.createBirthday);
+router.put('/:id', upload.single('photo'), createBirthdayValidators, birthdayController.updatePlayer);
+
 
 module.exports = router;

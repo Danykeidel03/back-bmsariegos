@@ -54,4 +54,23 @@ async function getLatestNotices() {
     }
 }
 
-module.exports = { newNotice, getLatestNotices };
+async function getNotices() {
+    try {
+        const notices = await Notice.find()
+        return notices;
+    } catch (e) {
+        console.log('Error en getLatestNotices:', e);
+        return e;
+    }
+}
+
+async function deleteNotice(id) {
+    try {
+        const deletedNotice = await Notice.findByIdAndDelete(id);
+        return deletedNotice;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { newNotice, getLatestNotices, getNotices, deleteNotice };
