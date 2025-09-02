@@ -1,4 +1,4 @@
-const { getDates, createBirthday } = require("../services/birthdayManage");
+const { getDates, createBirthday, updatePlayer } = require("../services/birthdayManage");
 
 const birthdayController = {
     getBirthdays:
@@ -46,7 +46,34 @@ const birthdayController = {
                     data: e.message
                 })
             }
-        }
+        },
+
+    updatePlayer: 
+        async (request, response) => {
+            try {
+                const { id } = request.params;
+                const { name, dni, birthDay, category } = request.body;
+
+                const data = await updatePlayer(id, { name, dni, birthDay, category});
+
+                if (data.code === 11001) {
+                    return response.status(400).json({ message: "Foto no válida", code: 11001 });
+                }
+
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Player updated successfully',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
 }
 
 module.exports = birthdayController;
