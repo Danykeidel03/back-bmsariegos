@@ -6,6 +6,7 @@ const createBirthdayValidators = require('../validations/birthdayValidator');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', birthdayController.getBirthdays);
+router.get('/getAll', birthdayController.getAllBirthdays);
 router.post('/', upload.single('photo'), createBirthdayValidators, birthdayController.createBirthday);
 router.put('/:id', upload.single('photo'), createBirthdayValidators, birthdayController.updatePlayer);
 

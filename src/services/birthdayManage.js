@@ -101,4 +101,13 @@ async function updatePlayer(id, { name, dni, birthDay, category }) {
     }
 }
 
-module.exports = { getDates, createBirthday, updatePlayer };
+async function getAllBirthdays() {
+    try {
+        const players = await PlayerBirthday.find();
+        return players;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays };
