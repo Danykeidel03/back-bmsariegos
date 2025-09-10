@@ -1,4 +1,4 @@
-const { getDates, createBirthday, updatePlayer, getAllBirthdays } = require("../services/birthdayManage");
+const { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday } = require("../services/birthdayManage");
 
 const birthdayController = {
     getBirthdays:
@@ -82,6 +82,34 @@ const birthdayController = {
                 return response.status(200).json({
                     status: 200,
                     message: 'success',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                return response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+
+    deleteBirthday:
+        async (request, response) => {
+            try {
+                const { id } = request.params;
+                const data = await deleteBirthday(id);
+                
+                if (!data) {
+                    return response.status(404).json({
+                        status: 404,
+                        message: 'Birthday not found'
+                    });
+                }
+                
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Birthday deleted successfully',
                     data: data
                 });
             } catch (e) {

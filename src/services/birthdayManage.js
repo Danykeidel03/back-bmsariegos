@@ -110,4 +110,13 @@ async function getAllBirthdays() {
     }
 }
 
-module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays };
+async function deleteBirthday(id) {
+    try {
+        const player = await PlayerBirthday.findByIdAndDelete(id);
+        return player;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday };
