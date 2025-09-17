@@ -57,4 +57,13 @@ async function updateMatchDateTime(id, { date, time }) {
     }
 }
 
-module.exports = { createMatch, getMatches, updateMatch, updateMatchDateTime };
+async function deleteMatch(id) {
+    try {
+        const deletedMatch = await Match.findByIdAndDelete(id);
+        return deletedMatch;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { createMatch, getMatches, updateMatch, updateMatchDateTime, deleteMatch };

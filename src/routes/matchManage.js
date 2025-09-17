@@ -8,5 +8,6 @@ router.get('/', verifyApiKey, matchController.getMatches);
 router.post('/', verifyApiKey, createMatchValidators, matchController.createMatch);
 router.put('/:id', verifyApiKey, updateMatchValidators, matchController.updateMatch);
 router.put('/:id/datetime', verifyApiKey, updateMatchDateTimeValidators, matchController.updateMatchDateTime);
+router.delete('/:id', verifyApiKey, matchController.deleteMatch);
 
 module.exports = router;
