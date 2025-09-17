@@ -24,6 +24,8 @@ const birthdayController = {
     createBirthday:
         async (request, response) => {
             try {
+                console.log('Request body:', request.body);
+                console.log('Request file:', request.file);
                 const { name, dni, birthDay, category } = request.body;
                 const photoBuffer = request.file ? request.file.buffer : null;
                 
