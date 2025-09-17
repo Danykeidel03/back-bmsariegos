@@ -21,7 +21,7 @@ const createBirthdayValidators = [
 
   body('birthDay')
     .notEmpty().withMessage('La fecha de cumpleaños es obligatoria')
-    .isISO8601().withMessage('La fecha debe tener formato válido (YYYY-MM-DD)'),
+    .matches(/^\d{4}-\d{2}-\d{2}$/).withMessage('La fecha debe tener formato válido (YYYY-MM-DD)'),
 
   body('category')
     .notEmpty().withMessage('La categoría es obligatoria')
