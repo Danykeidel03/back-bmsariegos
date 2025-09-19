@@ -33,4 +33,17 @@ async function deleteTeam(id) {
     }
 }
 
-module.exports = { createTeam, getTeams, deleteTeam };
+async function updateTeamName(id, { name }) {
+    try {
+        const updatedTeam = await Team.findByIdAndUpdate(
+            id,
+            { name },
+            { new: true }
+        );
+        return updatedTeam;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { createTeam, getTeams, deleteTeam, updateTeamName };
