@@ -17,7 +17,7 @@ async function createTeam({ name, category, division }) {
 
 async function getTeams() {
     try {
-        const teams = await Team.find();
+        const teams = await Team.find().sort({ order: 1 });
         return teams;
     } catch (e) {
         return e;
@@ -46,4 +46,16 @@ async function updateTeamName(id, { name }) {
     }
 }
 
-module.exports = { createTeam, getTeams, deleteTeam, updateTeamName };
+async function reorderTeams(teamOrders) {
+    try {
+        const updatePromises = teamOrders.map(({ id, order }) => 
+            Team.findByIdAndUpdate(id, { order }, { new: true })
+        );
+        const updatedTeams = await Promise.all(updatePromises);
+        return updatedTeams;
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { createTeam, getTeams, deleteTeam, updateTeamName, reorderTeams };

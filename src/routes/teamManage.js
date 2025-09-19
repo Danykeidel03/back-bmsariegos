@@ -6,6 +6,7 @@ const createTeamValidators = require('../validations/teamValidator');
 router.get('/', teamController.getTeams);
 router.post('/', createTeamValidators, teamController.createTeam);
 router.put('/:id/name', teamController.updateTeamName);
+router.put('/reorder', teamController.reorderTeams);
 router.delete('/:id', teamController.deleteTeam);
 
 module.exports = router;

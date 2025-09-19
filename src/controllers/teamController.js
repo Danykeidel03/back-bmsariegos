@@ -1,4 +1,4 @@
-const { createTeam, getTeams, deleteTeam, updateTeamName } = require("../services/teamManage");
+const { createTeam, getTeams, deleteTeam, updateTeamName, reorderTeams } = require("../services/teamManage");
 
 const teamController = {
     createTeam:
@@ -85,6 +85,27 @@ const teamController = {
                 return response.status(200).json({
                     status: 200,
                     message: 'Team name updated successfully',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+    reorderTeams:
+        async (request, response) => {
+            try {
+                const { teamOrders } = request.body;
+                
+                const data = await reorderTeams(teamOrders);
+                
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Teams reordered successfully',
                     data: data
                 });
             } catch (e) {
