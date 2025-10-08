@@ -17,33 +17,46 @@ const equipoUrls = {
 
 const setupController = {
     setupClasificaciones: async (request, response) => {
+        const timeout = setTimeout(() => {
+            if (!response.headersSent) {
+                response.status(408).json({ message: 'Request timeout' });
+            }
+        }, 25000);
+        
         try {
-            const teams = await Team.find({});
+            console.log('Iniciando setup clasificaciones...');
+            const teams = await Team.find({}).maxTimeMS(10000);
+            console.log(`Encontrados ${teams.length} equipos`);
+            
             const results = [];
             
             for (const team of teams) {
                 const url = equipoUrls[team.name];
                 
                 if (url) {
-                    await Team.findByIdAndUpdate(team._id, { clasificacionUrl: url });
+                    await Team.findByIdAndUpdate(team._id, { clasificacionUrl: url }).maxTimeMS(5000);
                     results.push({ team: team.name, status: 'configured' });
                 } else {
                     results.push({ team: team.name, status: 'no_url_found' });
                 }
             }
             
+            clearTimeout(timeout);
             return response.status(200).json({
                 status: 200,
                 message: 'Setup completed',
                 data: results
             });
         } catch (error) {
-            console.log(error);
-            response.status(500).json({
-                status: 500,
-                message: 'Setup failed',
-                data: error.message
-            });
+            clearTimeout(timeout);
+            console.error('Error en setup:', error);
+            if (!response.headersSent) {
+                response.status(500).json({
+                    status: 500,
+                    message: 'Setup failed',
+                    error: error.message
+                });
+            }
         }
     }
 };
