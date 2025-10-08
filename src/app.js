@@ -7,6 +7,9 @@ const cookieParser = require('cookie-parser');
 const nokMiddleware = require('./middlewares/nokMiddleware');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
+// Trust proxy for Railway deployment
+app.set('trust proxy', 1);
+
 //Parsear de forma automatica en JSON
 app.use(
   cors({
