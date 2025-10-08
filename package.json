@@ -27,5 +27,8 @@
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^7.0.0",
     "ws": "^8.18.2"
+  },
+  "overrides": {
+    "undici": "5.28.4"
   }
 }
