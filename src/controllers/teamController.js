@@ -4,9 +4,9 @@ const teamController = {
     createTeam:
         async (request, response) => {
             try {
-                const { name, category, division } = request.body;
+                const { name, category, division, clasificacionUrl } = request.body;
                 
-                const data = await createTeam({ name, category, division });
+                const data = await createTeam({ name, category, division, clasificacionUrl });
                 
                 return response.status(201).json({
                     status: 201,
@@ -106,6 +106,37 @@ const teamController = {
                 return response.status(200).json({
                     status: 200,
                     message: 'Teams reordered successfully',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+    
+    updateClasificacionUrl:
+        async (request, response) => {
+            try {
+                const { id } = request.params;
+                const { clasificacionUrl } = request.body;
+                
+                const Team = require('../models/Team');
+                const data = await Team.findByIdAndUpdate(id, { clasificacionUrl }, { new: true });
+                
+                if (!data) {
+                    return response.status(404).json({
+                        status: 404,
+                        message: 'Team not found'
+                    });
+                }
+                
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Classification URL updated successfully',
                     data: data
                 });
             } catch (e) {
