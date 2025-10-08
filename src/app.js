@@ -54,6 +54,12 @@ app.use('/match', matchManage)
 const imagenCabeceraManage = require('./routes/imagenCabeceraManage')
 app.use('/imagenes-cabecera', imagenCabeceraManage)
 
+const clasificacionManage = require('./routes/clasificacionManage')
+app.use('/api', clasificacionManage)
+
+const setupManage = require('./routes/setupManage')
+app.use('/setup', setupManage)
+
 //toda mi api queda protegida de muchas peticiones recurrentes y excesivas
 app.use('/', apiLimiter);
 
