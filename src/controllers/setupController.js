@@ -1,18 +1,18 @@
 const Team = require('../models/Team');
 
 const equipoUrls = {
-    'COESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209409&id_temp=2526&id_ambito=19&id_territorial=36',
-    'MOLOKO BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209410&id_temp=2526&id_ambito=19&id_territorial=36',
-    'CASA DEL PUEBLO BMS ZARDINO ': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209410&id_temp=2526&id_ambito=19&id_territorial=36',
-    'HOTEL ALFAGEME BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209412&id_temp=2526&id_ambito=19&id_territorial=36',
-    'INGESAN BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209411&id_temp=2526&id_ambito=19&id_territorial=36',
-    'ARTESANIAS LUYMA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209428&id_temp=2526&id_ambito=19&id_territorial=36',
-    'CLINICA DENTAL SILVA CIDEO': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id=1032305&jornada=2&id_ambito=19',
-    'ELECTRICIDAD PANTOJA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209413&id_temp=2526&id_ambito=19&id_territorial=36',
-    'DIDACTICA LEONESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209430&id_temp=2526&id_ambito=19&id_territorial=36',
-    ' ILEON.COM BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209430&id=1032308&id_temp=2526&id_territorial=36&id_ambito=19',
-    'FERRETERIA EL CRUCERO BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209429&id_temp=2526&id_ambito=19&id_territorial=36',
-    'FISIOPAT BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id_superficie=1&id_categoria=2551&id_competicion=209399&id_temp=2526&id_ambito=19&id_territorial=36'
+    'COESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032278&jornada=226',
+    'MOLOKO BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032571',
+    'CASA DEL PUEBLO BMS ZARDINO ': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032571',
+    'HOTEL ALFAGEME BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032295',
+    'INGESAN BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032297',
+    'ARTESANIAS LUYMA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032304',
+    'CLINICA DENTAL SILVA CIDEO': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032305',
+    'ELECTRICIDAD PANTOJA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032300',
+    'DIDACTICA LEONESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032307',
+    ' ILEON.COM BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032308',
+    'FERRETERIA EL CRUCERO BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032302',
+    'FISIOPAT BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032296'
 };
 
 const setupController = {
