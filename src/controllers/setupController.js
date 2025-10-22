@@ -1,7 +1,7 @@
 const Team = require('../models/Team');
 
 const equipoUrls = {
-    'COESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032278&jornada=226',
+    'COESA BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032278&jornada=22',
     'MOLOKO BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032571',
     'CASA DEL PUEBLO BMS ZARDINO ': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032571',
     'HOTEL ALFAGEME BM SARIEGOS': 'https://resultadosbalonmano.isquad.es/clasificacion.php?seleccion=0&id=1032295',
