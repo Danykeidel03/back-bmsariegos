@@ -1,7 +1,6 @@
 require('dotenv').config();
 const app = require('./src/app');
 const connectBD = require('./src/config/database');
-const http = require('http');
 
 console.log('🚀 Iniciando servidor...');
 console.log('📦 NODE_ENV:', process.env.NODE_ENV || 'development');
@@ -13,18 +12,31 @@ console.log('🌐 ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS || 'No configur
         console.log('📡 Conectando a MongoDB...');
         await connectBD();
         
-        const server = http.createServer(app);
         const PORT = process.env.PORT || 3005;
+        const HOST = '0.0.0.0';
         
-        server.listen(PORT, '0.0.0.0', () => {
-            console.log(`✅ Servidor escuchando en el puerto ${PORT}`);
+        // Railway necesita que uses app.listen directamente, no http.createServer
+        const server = app.listen(PORT, HOST, () => {
+            console.log(`✅ Servidor escuchando en ${HOST}:${PORT}`);
             console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
             console.log(`⏰ Iniciado a las: ${new Date().toLocaleString()}`);
         });
 
         server.on('error', (err) => {
             console.error('❌ Error del servidor:', err);
+            if (err.code === 'EADDRINUSE') {
+                console.error(`Puerto ${PORT} ya está en uso`);
+            }
             process.exit(1);
+        });
+
+        // Manejo de cierre graceful
+        process.on('SIGTERM', () => {
+            console.log('🛑 SIGTERM recibido, cerrando servidor...');
+            server.close(() => {
+                console.log('✅ Servidor cerrado correctamente');
+                process.exit(0);
+            });
         });
 
     } catch (e) {
