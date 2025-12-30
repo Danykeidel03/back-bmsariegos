@@ -6,6 +6,8 @@ console.log('🚀 Iniciando servidor...');
 console.log('📦 NODE_ENV:', process.env.NODE_ENV || 'development');
 console.log('🔌 PORT:', process.env.PORT || 3005);
 console.log('🌐 ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS || 'No configurado');
+console.log('💾 MONGODB_URI:', process.env.MONGODB_URI ? 'Configurado ✅' : 'NO CONFIGURADO ❌');
+console.log('🔐 JWT_SECRET:', process.env.JWT_SECRET ? 'Configurado ✅' : 'NO CONFIGURADO ❌');
 
 (async () => {
     try {
@@ -15,11 +17,14 @@ console.log('🌐 ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS || 'No configur
         const PORT = process.env.PORT || 3005;
         const HOST = '0.0.0.0';
         
+        console.log(`🎯 Intentando escuchar en ${HOST}:${PORT}...`);
+        
         // Railway necesita que uses app.listen directamente, no http.createServer
         const server = app.listen(PORT, HOST, () => {
             console.log(`✅ Servidor escuchando en ${HOST}:${PORT}`);
             console.log(`🌍 Ambiente: ${process.env.NODE_ENV || 'development'}`);
             console.log(`⏰ Iniciado a las: ${new Date().toLocaleString()}`);
+            console.log(`🔗 URL: http://${HOST}:${PORT}`);
         });
 
         server.on('error', (err) => {
