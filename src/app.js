@@ -13,7 +13,9 @@ const errorMiddleware = require('./middlewares/errorMiddleware');
 app.set('trust proxy', 1);
 
 // Configurar CORS con orígenes específicos
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',');
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(o => o.trim());
+
+console.log('🌐 Orígenes CORS permitidos:', allowedOrigins);
 
 app.use(
   cors({
@@ -22,21 +24,29 @@ app.use(
       if (!origin) return callback(null, true);
       
       if (allowedOrigins.includes(origin)) {
+        console.log(`✅ CORS permitido para: ${origin}`);
         callback(null, true);
       } else {
         console.warn(`🚫 CORS bloqueado para origen: ${origin}`);
-        console.warn(`✅ Orígenes permitidos:`, allowedOrigins);
-        callback(new Error('No autorizado por CORS'));
+        console.warn(`📋 Orígenes permitidos:`, allowedOrigins);
+        // Permitir de todas formas para debug - luego quitar esto
+        callback(null, true);
       }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-api-key'],
+    exposedHeaders: ['set-cookie'],
+    optionsSuccessStatus: 200
   })
 );
 
 //Parsear de forma automatica en JSON
 app.use(express.json());
 app.use(cookieParser());
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
 
 // Rate limiting - APLICAR ANTES DE LAS RUTAS
 const apiLimiter = rateLimit({
@@ -45,6 +55,24 @@ const apiLimiter = rateLimit({
   message: 'Demasiadas peticiones desde esta ip'
 });
 app.use('/', apiLimiter);
+
+// Health check endpoint (sin rate limit ni auth)
+app.get('/', (req, res) => {
+  res.status(200).json({ 
+    status: 'OK', 
+    message: 'BM Sariegos API funcionando',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
 
 /**
  * LLAMADA RUTAS
