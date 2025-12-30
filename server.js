@@ -4,7 +4,7 @@ const connectBD = require('./src/config/database');
 
 console.log('🚀 Iniciando servidor...');
 console.log('📦 NODE_ENV:', process.env.NODE_ENV || 'development');
-console.log('🔌 PORT:', process.env.PORT || 3005);
+console.log('🔌 PORT detectado:', process.env.PORT || 'NO CONFIGURADO - usando 3005');
 console.log('🌐 ALLOWED_ORIGINS:', process.env.ALLOWED_ORIGINS || 'No configurado');
 console.log('💾 MONGODB_URI:', process.env.MONGODB_URI ? 'Configurado ✅' : 'NO CONFIGURADO ❌');
 console.log('🔐 JWT_SECRET:', process.env.JWT_SECRET ? 'Configurado ✅' : 'NO CONFIGURADO ❌');
@@ -14,7 +14,8 @@ console.log('🔐 JWT_SECRET:', process.env.JWT_SECRET ? 'Configurado ✅' : 'NO
         console.log('📡 Conectando a MongoDB...');
         await connectBD();
         
-        const PORT = process.env.PORT || 3005;
+        // Railway asigna dinámicamente el puerto, usar process.env.PORT sin fallback
+        const PORT = parseInt(process.env.PORT) || 3005;
         const HOST = '0.0.0.0';
         
         console.log(`🎯 Intentando escuchar en ${HOST}:${PORT}...`);
