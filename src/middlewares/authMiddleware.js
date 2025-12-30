@@ -1,5 +1,7 @@
-const secretKey = 'estoesunaclavesecretaquenadiesabrajamas'
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
+
+const secretKey = process.env.JWT_SECRET || 'clave_secreta_default';
 
 const verificarToken = (req, res, next) => {
     // 1. Obtener token de las cookies

@@ -4,30 +4,42 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
+
 const nokMiddleware = require('./middlewares/nokMiddleware');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 // Trust proxy for Railway deployment
 app.set('trust proxy', 1);
 
-//Parsear de forma automatica en JSON
+// Configurar CORS con orígenes específicos
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',');
+
 app.use(
   cors({
     origin: function (origin, callback) {
-      callback(null, true);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('No autorizado por CORS'));
+      }
     },
     credentials: true,
   })
 );
+
+//Parsear de forma automatica en JSON
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
 
+// Rate limiting - APLICAR ANTES DE LAS RUTAS
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: 'Demasiadas peticiones desde esta ip'
 });
+app.use('/', apiLimiter);
 
 /**
  * LLAMADA RUTAS
@@ -62,9 +74,6 @@ app.use('/api', clasificacionManage)
 
 const setupManage = require('./routes/setupManage')
 app.use('/setup', setupManage)
-
-//toda mi api queda protegida de muchas peticiones recurrentes y excesivas
-app.use('/', apiLimiter);
 
 app.use(nokMiddleware)
 app.use(errorMiddleware)

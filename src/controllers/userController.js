@@ -4,7 +4,10 @@ const {
 } = require("../services/userManage");
 const createUserValidators = require("../validations/userValidator");
 const jwt = require("jsonwebtoken");
-const secretKey = "estoesunaclavesecretaquenadiesabrajamas";
+require('dotenv').config();
+
+const secretKey = process.env.JWT_SECRET || "estoesunaclavesecretaquenadiesabrajamas";
+const jwtExpire = process.env.JWT_EXPIRE || "1h";
 
 const userController = {
     registerUser: [
@@ -46,18 +49,18 @@ const userController = {
                 const token = jwt.sign(
                     { userId: data._id, mailUser: data.mail },
                     secretKey,
-                    { expiresIn: "1h" }
+                    { expiresIn: jwtExpire }
                 );
                 const isProduction = process.env.NODE_ENV === "production";
 
                 res.cookie("token", token, {
                     httpOnly: true,
-                    secure: true,
-                    sameSite: "None",
+                    secure: isProduction,
+                    sameSite: "Strict",
                     maxAge: 3600000,
                     path: "/",
                 });
-                console.log("Cookies metidas");
+                console.log("Token guardado en cookies");
                 return res.status(200).json({
                     status: 200,
                     message: "Login exitoso",
@@ -68,7 +71,7 @@ const userController = {
 
             } catch (e) {
                 console.log("Error al login", e);
-                res.status(500).json({ error: "Error interno del servidor" }); // Añadir manejo de error
+                res.status(500).json({ error: "Error interno del servidor" });
             }
         },
     ],

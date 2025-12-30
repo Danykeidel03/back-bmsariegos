@@ -1,34 +1,34 @@
-//AQUI VAN EL SCHEMA DE USUSARIO
-const mongose = require('mongoose');
+//AQUI VAN EL SCHEMA DE USUARIO
+const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const ususarioSchema = new mongose.Schema({
+const usuarioSchema = new mongoose.Schema({
     name: { type: String, required: true},
     mail: { type: String, required: true, unique: true },
     pass: { type: String, required: true }
 });
 
-ususarioSchema.pre('save', async function (next) {
+usuarioSchema.pre('save', async function (next) {
     try {
         // Solo hashear si la contraseña fue modificada (o es nueva)
-        if (!this.isModified('password')) return next();
+        if (!this.isModified('pass')) return next();
 
         // Generar salt y hashear
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(this.password, salt);
+        const hashedPassword = await bcrypt.hash(this.pass, salt);
 
         // Reemplazar la contraseña en texto plano con el hash
-        this.password = hashedPassword;
+        this.pass = hashedPassword;
         next();
     } catch (error) {
         next(error);
     }
 });
 
-ususarioSchema.methods.comparePassword = async function (candidatePassword) {
-    return await bcrypt.compare(candidatePassword, this.password);
+usuarioSchema.methods.comparePassword = async function (candidatePassword) {
+    return await bcrypt.compare(candidatePassword, this.pass);
 };
 
-const UserRegister = mongose.model('UserRegister', ususarioSchema);
+const UserRegister = mongoose.model('UserRegister', usuarioSchema);
 
 module.exports = UserRegister;

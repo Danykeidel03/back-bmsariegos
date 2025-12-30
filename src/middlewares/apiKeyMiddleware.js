@@ -1,4 +1,6 @@
-const API_KEY = 'bm-sariegos-internal-2024';
+require('dotenv').config();
+
+const API_KEY = process.env.API_KEY || 'default-api-key';
 
 const verifyApiKey = (req, res, next) => {
     const apiKey = req.headers['x-api-key'];
