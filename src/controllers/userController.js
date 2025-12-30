@@ -6,7 +6,12 @@ const createUserValidators = require("../validations/userValidator");
 const jwt = require("jsonwebtoken");
 require('dotenv').config();
 
-const secretKey = process.env.JWT_SECRET || "estoesunaclavesecretaquenadiesabrajamas";
+if (!process.env.JWT_SECRET) {
+    console.error('❌ FATAL: JWT_SECRET no está configurado en variables de entorno');
+    process.exit(1);
+}
+
+const secretKey = process.env.JWT_SECRET;
 const jwtExpire = process.env.JWT_EXPIRE || "1h";
 
 const userController = {

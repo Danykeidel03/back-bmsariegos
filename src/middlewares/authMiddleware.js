@@ -1,7 +1,12 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
-const secretKey = process.env.JWT_SECRET || 'clave_secreta_default';
+if (!process.env.JWT_SECRET) {
+    console.error('❌ FATAL: JWT_SECRET no está configurado');
+    process.exit(1);
+}
+
+const secretKey = process.env.JWT_SECRET;
 
 const verificarToken = (req, res, next) => {
     // 1. Obtener token de las cookies
