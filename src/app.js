@@ -48,15 +48,7 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Rate limiting - APLICAR ANTES DE LAS RUTAS
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: 'Demasiadas peticiones desde esta ip'
-});
-app.use('/', apiLimiter);
-
-// Health check endpoint (sin rate limit ni auth)
+// Health check endpoints ANTES del rate limiting (para Railway y monitoreo)
 app.get('/', (req, res) => {
   res.status(200).json({ 
     status: 'OK', 
@@ -73,6 +65,24 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Rate limiting - APLICAR A LAS RUTAS DE LA API (después de health checks)
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: 'Demasiadas peticiones desde esta ip',
+  skip: (req) => req.path === '/' || req.path === '/health' // Excluir health checks
+});
+app.use('/api', apiLimiter);
+app.use('/user', apiLimiter);
+app.use('/notice', apiLimiter);
+app.use('/sponsor', apiLimiter);
+app.use('/rival-team', apiLimiter);
+app.use('/team', apiLimiter);
+app.use('/match', apiLimiter);
+app.use('/imagenes-cabecera', apiLimiter);
+app.use('/birthday', apiLimiter);
+app.use('/setup', apiLimiter);
 
 /**
  * LLAMADA RUTAS
