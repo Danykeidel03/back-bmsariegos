@@ -14,8 +14,10 @@ app.set('trust proxy', 1);
 
 // Configurar CORS con orígenes específicos
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',').map(o => o.trim());
+const isProduction = process.env.NODE_ENV === 'production';
 
 console.log('🌐 Orígenes CORS permitidos:', allowedOrigins);
+console.log('🔒 Modo de producción:', isProduction);
 
 app.use(
   cors({
@@ -37,16 +39,31 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'x-api-key'],
     exposedHeaders: ['set-cookie'],
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    maxAge: 86400 // 24 horas
   })
 );
 
 //Parsear de forma automatica en JSON
 app.use(express.json());
 app.use(cookieParser());
+
+// Configurar helmet con opciones para CORS
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
 }));
+
+// Middleware para configurar cookies con SameSite correcto para CORS
+app.use((req, res, next) => {
+  const originalJson = res.json;
+  res.json = function(data) {
+    // Configurar headers de cookie si se necesita setear una
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    return originalJson.call(this, data);
+  };
+  next();
+});
 
 // Health check endpoints ANTES del rate limiting (para Railway y monitoreo)
 app.get('/', (req, res) => {

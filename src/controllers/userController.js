@@ -60,9 +60,9 @@ const userController = {
 
                 res.cookie("token", token, {
                     httpOnly: true,
-                    secure: isProduction,
-                    sameSite: "Strict",
-                    maxAge: 3600000,
+                    secure: isProduction, // true en producción, false en desarrollo
+                    sameSite: isProduction ? "None" : "Lax", // "None" requiere secure: true en HTTPS
+                    maxAge: 3600000, // 1 hora
                     path: "/",
                 });
                 console.log("Token guardado en cookies");
