@@ -3,7 +3,12 @@ const router = express.Router();
 const multer = require('multer');
 const rivalTeamController = require('../controllers/rivalTeamController');
 const createRivalTeamValidators = require('../validations/rivalTeamValidator');
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 30 * 1024 * 1024 // 30MB limit
+    }
+});
 
 router.get('/', rivalTeamController.getRivalTeams);
 router.post('/', upload.single('photo'), createRivalTeamValidators, rivalTeamController.createRivalTeam);
