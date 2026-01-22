@@ -19,7 +19,10 @@ const addImagenCabecera = async (photoBuffer, urlImagen) => {
         cloudinary.uploader.upload_stream(
             { 
                 folder: 'imagenes-cabecera',
-                public_id: `cabecera_${Date.now()}`
+                public_id: `cabecera_${Date.now()}`,
+                transformation: [
+                    { width: 2000, height: 700, crop: 'fill', gravity: 'auto' }
+                ]
             },
             (error, result) => {
                 if (error) reject(error);
