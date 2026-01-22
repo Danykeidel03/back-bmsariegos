@@ -55,11 +55,16 @@ const birthdayController = {
             try {
                 const { id } = request.params;
                 const { name, dni, birthDay, category } = request.body;
+                const photoBuffer = request.file ? request.file.buffer : null;
 
-                const data = await updatePlayer(id, { name, dni, birthDay, category});
+                const data = await updatePlayer(id, { name, dni, birthDay, category, photoBuffer});
 
                 if (data.code === 11001) {
                     return response.status(400).json({ message: "Foto no válida", code: 11001 });
+                }
+
+                if (data.code === 404) {
+                    return response.status(404).json({ message: "Jugador no encontrado", code: 404 });
                 }
 
                 return response.status(200).json({

@@ -83,19 +83,45 @@ async function createBirthday({ name, dni, birthDay, category, photoBuffer }) {
     }
 }
 
-async function updatePlayer(id, { name, dni, birthDay, category }) {
+async function updatePlayer(id, { name, dni, birthDay, category, photoBuffer }) {
     try {
-        const player = await PlayerBirthday.findByIdAndUpdate(
+        const player = await PlayerBirthday.findById(id);
+        if (!player) {
+            const err = new Error('Player not found');
+            err.code = 404;
+            throw err;
+        }
+
+        const updateData = {
+            name: name,
+            dni: dni,
+            birthDay: new Date(birthDay),
+            category: category
+        };
+
+        // Si se proporciona una nueva foto, subirla a Cloudinary
+        if (photoBuffer) {
+            const uploadResult = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    {
+                        folder: 'birthday',
+                        public_id: name.replace(/\s+/g, '_').toLowerCase() + '_' + Date.now()
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result);
+                    }
+                ).end(photoBuffer);
+            });
+            updateData.photoName = uploadResult.secure_url;
+        }
+
+        const updatedPlayer = await PlayerBirthday.findByIdAndUpdate(
             id,
-            {
-                name: name,
-                dni: dni,
-                birthDay: new Date(birthDay),
-                category: category
-            },
+            updateData,
             { new: true }
-        )
-        return player;
+        );
+        return updatedPlayer;
     } catch (e) {
         return e;
     }
