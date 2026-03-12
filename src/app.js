@@ -31,8 +31,8 @@ app.use(
       } else {
         console.warn(`🚫 CORS bloqueado para origen: ${origin}`);
         console.warn(`📋 Orígenes permitidos:`, allowedOrigins);
-        // Permitir de todas formas para debug - luego quitar esto
-        callback(null, true);
+        // ✅ RECHAZAR orígenes no autorizados (no permitir como antes)
+        callback(new Error('CORS policy: origin not allowed'));
       }
     },
     credentials: true,
