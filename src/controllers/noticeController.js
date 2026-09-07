@@ -1,4 +1,4 @@
-const { newNotice, getLatestNotices, getNotices, deleteNotice } = require("../services/noticeManage");
+const { newNotice, getLatestNotices, getNotices, getNoticeBySlug, deleteNotice } = require("../services/noticeManage");
 const newNoticeValidator = require("../validations/noticeValidator");
 
 const noticeController = {
@@ -57,6 +57,28 @@ const noticeController = {
     getAllNoticesController: async (request, response) => {
         try {
             const data = await getNotices();
+            return response.status(200).json({
+                status: 200,
+                message: 'success',
+                data: data
+            });
+        } catch (e) {
+            console.log('Error:', e);
+            return response.status(500).json({ message: "Error interno del servidor" });
+        }
+    },
+    getNoticeBySlugController: async (request, response) => {
+        try {
+            const { slug } = request.params;
+            const data = await getNoticeBySlug(slug);
+
+            if (!data) {
+                return response.status(404).json({
+                    status: 404,
+                    message: 'Notice not found'
+                });
+            }
+
             return response.status(200).json({
                 status: 200,
                 message: 'success',

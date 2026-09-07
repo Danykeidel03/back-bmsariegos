@@ -1,6 +1,17 @@
 const Notice = require('../models/Notice');
 const cloudinary = require('../config/cloudinary');
 
+function slugify(title) {
+    return title
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, '')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/[\s-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+}
+
 async function newNotice(title, photoBuffer, descripcion) {
     try {
         if (!photoBuffer) {
@@ -12,7 +23,7 @@ async function newNotice(title, photoBuffer, descripcion) {
         // Subir imagen a Cloudinary
         const uploadResult = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
-                { 
+                {
                     folder: 'notice',
                     public_id: title.replace(/\s+/g, '_').toLowerCase()
                 },
@@ -27,6 +38,7 @@ async function newNotice(title, photoBuffer, descripcion) {
 
         const notice = new Notice({
             title,
+            slug: slugify(title),
             photoName: uploadResult.secure_url,
             descripcion
         });
@@ -64,6 +76,16 @@ async function getNotices() {
     }
 }
 
+async function getNoticeBySlug(slug) {
+    try {
+        const notice = await Notice.findOne({ slug });
+        return notice;
+    } catch (e) {
+        console.log('Error en getNoticeBySlug:', e);
+        return e;
+    }
+}
+
 async function deleteNotice(id) {
     try {
         const deletedNotice = await Notice.findByIdAndDelete(id);
@@ -73,4 +95,4 @@ async function deleteNotice(id) {
     }
 }
 
-module.exports = { newNotice, getLatestNotices, getNotices, deleteNotice };
+module.exports = { newNotice, getLatestNotices, getNotices, getNoticeBySlug, deleteNotice, slugify };
