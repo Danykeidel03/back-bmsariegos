@@ -5,6 +5,7 @@ const noticeSchema = new mongose.Schema({
     slug: { type: String, required: true, unique: true, sparse: true },
     photoName: { type: String, required: true },
     descripcion: { type: String, required: true },
+    category: { type: String, enum: ['general', 'deportiva'], default: 'general', required: true },
 });
 
 const NoticeRegister = mongose.model('NoticeRegister', noticeSchema);

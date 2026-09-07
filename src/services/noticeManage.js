@@ -12,7 +12,7 @@ function slugify(title) {
         .replace(/^-+|-+$/g, '');
 }
 
-async function newNotice(title, photoBuffer, descripcion) {
+async function newNotice(title, photoBuffer, descripcion, category) {
     try {
         if (!photoBuffer) {
             const err = new Error('Photo required');
@@ -40,7 +40,8 @@ async function newNotice(title, photoBuffer, descripcion) {
             title,
             slug: slugify(title),
             photoName: uploadResult.secure_url,
-            descripcion
+            descripcion,
+            category: category === 'deportiva' ? 'deportiva' : 'general'
         });
 
         console.log('Datos a guardar:', { title, photoName: uploadResult.secure_url, descripcion });

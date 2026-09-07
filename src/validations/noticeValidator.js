@@ -19,6 +19,10 @@ const createNoticeValidators = [
     .notEmpty().withMessage('La descripcion es obligatorio')
     .isString().withMessage('La descripcion debe ser un texto'),
 
+  body('category')
+    .optional()
+    .isIn(['general', 'deportiva']).withMessage('La categoria debe ser "general" o "deportiva"'),
+
   validateResult
 ];
 

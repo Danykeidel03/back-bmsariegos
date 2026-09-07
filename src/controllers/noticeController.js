@@ -6,13 +6,14 @@ const noticeController = {
         ...newNoticeValidator,
         async (request, response) => {
             try {
-                const { title, descripcion } = request.body;
+                const { title, descripcion, category } = request.body;
                 const photoBuffer = request.file ? request.file.buffer : null;
-                
+
                 const data = await newNotice(
                     title,
                     photoBuffer,
-                    descripcion
+                    descripcion,
+                    category
                 );
                 if (data.code === 11000) {
                     const err = new Error("Duplicate key error");
