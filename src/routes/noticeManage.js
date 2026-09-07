@@ -3,10 +3,10 @@ const router = express.Router();
 const multer = require('multer');
 const noticeController = require('../controllers/noticeController');
 const authMiddleware = require('../middlewares/authMiddleware');
-const upload = multer({ 
+const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 30 * 1024 * 1024 // 30MB limit
+        fileSize: 10 * 1024 * 1024 // 10MB limit
     }
 });
 
