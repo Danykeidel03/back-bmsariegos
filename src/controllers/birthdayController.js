@@ -1,5 +1,5 @@
 const { parse } = require('csv-parse/sync');
-const { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv } = require("../services/birthdayManage");
+const { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv, wipeRoster } = require("../services/birthdayManage");
 
 const birthdayController = {
     getBirthdays:
@@ -148,17 +148,37 @@ const birthdayController = {
             try {
                 const { id } = request.params;
                 const data = await deleteBirthday(id);
-                
+
                 if (!data) {
                     return response.status(404).json({
                         status: 404,
                         message: 'Birthday not found'
                     });
                 }
-                
+
                 return response.status(200).json({
                     status: 200,
                     message: 'Birthday deleted successfully',
+                    data: data
+                });
+            } catch (e) {
+                console.log(e)
+                return response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+
+    wipeRoster:
+        async (request, response) => {
+            try {
+                const data = await wipeRoster();
+
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Players and teams deleted successfully',
                     data: data
                 });
             } catch (e) {

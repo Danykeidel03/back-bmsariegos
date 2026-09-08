@@ -26,6 +26,7 @@ router.get('/getAllbirthday', birthdayController.getAllBirthdays);
 router.post('/', authMiddleware.verificarToken, upload.single('photo'), createBirthdayValidators, birthdayController.createBirthday);
 router.post('/import', authMiddleware.verificarToken, uploadCsv.single('file'), birthdayController.importCsv);
 router.put('/:id', authMiddleware.verificarToken, upload.single('photo'), createBirthdayValidators, birthdayController.updatePlayer);
+router.delete('/roster', authMiddleware.verificarToken, birthdayController.wipeRoster);
 router.delete('/:id', authMiddleware.verificarToken, birthdayController.deleteBirthday);
 
 

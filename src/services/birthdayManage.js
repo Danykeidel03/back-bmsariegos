@@ -1,4 +1,5 @@
 const PlayerBirthday = require('../models/PlayerBirthday');
+const Team = require('../models/Team');
 const cloudinary = require('../config/cloudinary');
 const { findOrCreateByName } = require('./teamManage');
 
@@ -225,4 +226,14 @@ async function deleteBirthday(id) {
     }
 }
 
-module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv };
+async function wipeRoster() {
+    try {
+        const playersResult = await PlayerBirthday.deleteMany({});
+        const teamsResult = await Team.deleteMany({});
+        return { playersDeleted: playersResult.deletedCount, teamsDeleted: teamsResult.deletedCount };
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv, wipeRoster };

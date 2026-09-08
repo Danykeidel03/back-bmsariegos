@@ -66,4 +66,13 @@ async function deleteMatch(id) {
     }
 }
 
-module.exports = { createMatch, getMatches, updateMatch, updateMatchDateTime, deleteMatch };
+async function deleteAllMatches() {
+    try {
+        const result = await Match.deleteMany({});
+        return { matchesDeleted: result.deletedCount };
+    } catch (e) {
+        return e;
+    }
+}
+
+module.exports = { createMatch, getMatches, updateMatch, updateMatchDateTime, deleteMatch, deleteAllMatches };

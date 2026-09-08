@@ -1,4 +1,4 @@
-const { createMatch, getMatches, updateMatch, updateMatchDateTime, deleteMatch } = require("../services/matchManage");
+const { createMatch, getMatches, updateMatch, updateMatchDateTime, deleteMatch, deleteAllMatches } = require("../services/matchManage");
 
 const matchController = {
     createMatch:
@@ -102,19 +102,38 @@ const matchController = {
         async (request, response) => {
             try {
                 const { id } = request.params;
-                
+
                 const data = await deleteMatch(id);
-                
+
                 if (!data) {
                     return response.status(404).json({
                         status: 404,
                         message: 'Match not found'
                     });
                 }
-                
+
                 return response.status(200).json({
                     status: 200,
                     message: 'Match deleted successfully'
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+    deleteAllMatches:
+        async (request, response) => {
+            try {
+                const data = await deleteAllMatches();
+
+                return response.status(200).json({
+                    status: 200,
+                    message: 'All matches deleted successfully',
+                    data: data
                 });
             } catch (e) {
                 console.log(e)
