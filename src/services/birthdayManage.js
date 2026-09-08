@@ -1,5 +1,35 @@
 const PlayerBirthday = require('../models/PlayerBirthday');
 const cloudinary = require('../config/cloudinary');
+const { findOrCreateByName } = require('./teamManage');
+
+function normalizeWhitespace(value) {
+    return (value || '').replace(/\s+/g, ' ').trim();
+}
+
+function extractBirthDate(ageCell) {
+    const match = (ageCell || '').match(/(\d{2})\/(\d{2})\/(\d{4})/);
+    if (!match) return null;
+    const [, day, month, year] = match;
+    return new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+}
+
+function splitEmailPhone(contactCell) {
+    const raw = contactCell || '';
+    const emailMatch = raw.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);
+    const email = emailMatch ? emailMatch[0] : null;
+    const withoutEmail = email ? raw.replace(email, ' ') : raw;
+    const phoneMatch = withoutEmail.match(/\d[\d\s]{6,}\d/);
+    const phone = phoneMatch ? phoneMatch[0].replace(/\s+/g, ' ').trim() : null;
+    return { email, phone };
+}
+
+function splitTeamNameForNewTeam(fullTeamName) {
+    const genderMatch = fullTeamName.match(/\b(MASCULINO|FEMENINO|MIXTO)\b\s*$/i);
+    const division = genderMatch ? genderMatch[1].toUpperCase() : 'Sin clasificar';
+    const rest = genderMatch ? fullTeamName.slice(0, genderMatch.index).trim() : fullTeamName;
+    const category = normalizeWhitespace(rest.replace(/BM\.?\s*SARIEGOS/i, ' ')) || 'Sin clasificar';
+    return { category, division };
+}
 
 async function getDates() {
     try {
@@ -136,6 +166,56 @@ async function getAllBirthdays() {
     }
 }
 
+async function importPlayersFromCsv(rows) {
+    const summary = { playersCreated: 0, playersUpdated: 0, teamsCreated: 0, errors: [] };
+
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const csvLine = i + 2; // +1 header, +1 índice 0-based
+
+        try {
+            const name = normalizeWhitespace(row['nombre']);
+            const dni = normalizeWhitespace(row['dni']).toUpperCase();
+            const teamName = normalizeWhitespace(row['equipo']);
+            const birthDay = extractBirthDate(row['edad']);
+            const { email, phone } = splitEmailPhone(row['email y teléfono']);
+
+            if (!name || !dni || !teamName || !birthDay) {
+                throw new Error('Faltan campos obligatorios (nombre, dni, equipo o fecha de nacimiento)');
+            }
+
+            const { category, division } = splitTeamNameForNewTeam(teamName);
+            const { team, created: teamCreated } = await findOrCreateByName(teamName, { category, division });
+            if (teamCreated) summary.teamsCreated++;
+
+            const existingPlayer = await PlayerBirthday.findOne({ dni });
+            if (existingPlayer) {
+                existingPlayer.name = name;
+                existingPlayer.category = team.name;
+                existingPlayer.birthDay = birthDay;
+                if (email) existingPlayer.email = email;
+                if (phone) existingPlayer.phone = phone;
+                await existingPlayer.save();
+                summary.playersUpdated++;
+            } else {
+                await new PlayerBirthday({
+                    name,
+                    dni,
+                    category: team.name,
+                    birthDay,
+                    email,
+                    phone
+                }).save();
+                summary.playersCreated++;
+            }
+        } catch (rowError) {
+            summary.errors.push({ row: csvLine, reason: rowError.message });
+        }
+    }
+
+    return summary;
+}
+
 async function deleteBirthday(id) {
     try {
         const player = await PlayerBirthday.findByIdAndDelete(id);
@@ -145,4 +225,4 @@ async function deleteBirthday(id) {
     }
 }
 
-module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday };
+module.exports = { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv };

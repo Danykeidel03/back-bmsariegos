@@ -1,4 +1,5 @@
-const { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday } = require("../services/birthdayManage");
+const { parse } = require('csv-parse/sync');
+const { getDates, createBirthday, updatePlayer, getAllBirthdays, deleteBirthday, importPlayersFromCsv } = require("../services/birthdayManage");
 
 const birthdayController = {
     getBirthdays:
@@ -94,6 +95,47 @@ const birthdayController = {
             } catch (e) {
                 console.log(e)
                 return response.status(500).json({
+                    status: 500,
+                    message: 'error',
+                    data: e.message
+                })
+            }
+        },
+
+    importCsv:
+        async (request, response) => {
+            try {
+                if (!request.file) {
+                    return response.status(400).json({
+                        status: 400,
+                        message: 'No se recibió ningún archivo CSV'
+                    });
+                }
+
+                let rows;
+                try {
+                    rows = parse(request.file.buffer.toString('utf-8'), {
+                        columns: true,
+                        skip_empty_lines: true,
+                        bom: true
+                    });
+                } catch {
+                    return response.status(400).json({
+                        status: 400,
+                        message: 'El archivo no es un CSV válido'
+                    });
+                }
+
+                const summary = await importPlayersFromCsv(rows);
+
+                return response.status(200).json({
+                    status: 200,
+                    message: 'Importación completada',
+                    data: summary
+                });
+            } catch (e) {
+                console.log(e)
+                response.status(500).json({
                     status: 500,
                     message: 'error',
                     data: e.message

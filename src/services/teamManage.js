@@ -46,6 +46,29 @@ async function updateTeamName(id, { name }) {
     }
 }
 
+async function updateTeamDetails(id, { category, division }) {
+    try {
+        const updatedTeam = await Team.findByIdAndUpdate(
+            id,
+            { category, division },
+            { new: true }
+        );
+        return updatedTeam;
+    } catch (e) {
+        return e;
+    }
+}
+
+async function findOrCreateByName(name, { category, division }) {
+    const existing = await Team.findOne({ name });
+    if (existing) {
+        return { team: existing, created: false };
+    }
+
+    const created = await new Team({ name, category, division }).save();
+    return { team: created, created: true };
+}
+
 async function reorderTeams(teamOrders) {
     try {
         const updatePromises = teamOrders.map(({ id, order }) => 
@@ -58,4 +81,4 @@ async function reorderTeams(teamOrders) {
     }
 }
 
-module.exports = { createTeam, getTeams, deleteTeam, updateTeamName, reorderTeams };
+module.exports = { createTeam, getTeams, deleteTeam, updateTeamName, updateTeamDetails, findOrCreateByName, reorderTeams };
